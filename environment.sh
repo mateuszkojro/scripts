@@ -1,6 +1,11 @@
 export EDITOR=vim
+
+export PATH="$HOME/.local/bin:$PATH"
+export RESTIC_REPOSITORY="/Volumes/mk-backup/mk-pc"
+
 export MK_OBSIDIAN_DIR="/home/mkojro/sync/mk-vault"
 export MK_MODEL="deepseek-r1:14b"
+export MK_BACKUP_DIRS=("$HOME/Documents")
 
 function mk-search() {
 	if [ $# -lt 2 ]; then
@@ -42,3 +47,17 @@ function mk-daily() {
 	daily_path=$MK_OBSIDIAN_DIR/daily/$(date +%Y-%m-%d).md
 	mk-edit $daily_path
 }
+
+function mk-backup () {
+    echo "-- Starting backup"
+    for dir in $MK_BACKUP_DIRS; do
+        echo "-- backing up: $dir"
+        restic backup $dir
+    done
+    echo "-- Backup done"
+}
+
+function mk-backup-stats () {
+    restic snapshots
+}
+
